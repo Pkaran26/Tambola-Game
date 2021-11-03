@@ -46,7 +46,6 @@ const Tambola = () => {
       if (!usedNumber.includes(index)) {
         setcurrentNumber(index + 1)
         useUsedNumber((usedNumber) => ([...usedNumber, index]))
-        setDisableNext(false)
         return index
       }
       i++
@@ -57,13 +56,17 @@ const Tambola = () => {
     if (currentArray && currentArray.length > 0 && usedNumber.length < 101) {
       const index = generateIndex()
 
-      const temp = [...mainArray]
-      temp[index] = { ...temp[index], used: true }
-      setMainArray(temp)
+      if (index) {
+        setDisableNext(false)
 
-      const currentArraytemp = [...currentArray]
-      currentArraytemp.splice(index, 1)
-      setcurrentArray(currentArraytemp)
+        const temp = [...mainArray]
+        temp[index] = { ...temp[index], used: true }
+        setMainArray(temp)
+
+        const currentArraytemp = [...currentArray]
+        currentArraytemp.splice(index, 1)
+        setcurrentArray(currentArraytemp)
+      }
     }
   }
 
