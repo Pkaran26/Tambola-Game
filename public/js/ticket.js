@@ -82,7 +82,6 @@ const TambolaTicket = () => {
                     <input type='submit' className='btn btn-info btn-sm btn-block' value='Generate Ticket' />
                   </div>
                 </form>
-
                 <hr />
                 {tickets && tickets.length > 0 ?
                   <button className='btn btn-primary' onClick={printTickets}>Print</button>
@@ -91,27 +90,29 @@ const TambolaTicket = () => {
             </div>
           </div>
           : null}
-        <div className='col-lg-9' id='print'>
-          {tickets && tickets.length > 0 ?
-            tickets.map((ticket, i) => (
-              <table className='table table-bordered' key={i}>
-                <tbody>
-                  <tr>
-                    <td colSpan='5'>
-                      <strong className='text-info'>Ticket Number:</strong> {ticket.ticket_number}
-                    </td>
-                  </tr>
-                  {ticket.ticket.map((row, j) => (
-                    <tr key={j}>
-                      {row.map((e, k) => (
-                        <td key={k}>{e}</td>
-                      ))}
+        <div className='col-lg-9'>
+          <div id='print'>
+            {tickets && tickets.length > 0 ?
+              tickets.map((ticket, i) => (
+                <table className='table table-bordered' key={i}>
+                  <tbody>
+                    <tr>
+                      <td colSpan='5'>
+                        <strong className='text-info'>Ticket Number:</strong> {ticket.ticket_number}
+                      </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            ))
-            : null}
+                    {ticket.ticket.map((row, j) => (
+                      <tr key={j}>
+                        {row.map((e, k) => (
+                          <td key={k}>{e}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ))
+              : null}
+          </div>
         </div>
       </div>
     </div>
