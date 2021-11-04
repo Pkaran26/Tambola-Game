@@ -23,7 +23,7 @@ const genTicket = () => {
 }
 
 const generateTickets = (numberOfTicket) => {
-  fs.unlink('./public/tickets.zip')
+  fs.unlink('./public/tickets.zip', () => { })
   const tempTickes = []
   for (let i = 0; i < numberOfTicket; i++) {
     const ticket = genTicket()
