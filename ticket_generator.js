@@ -23,7 +23,6 @@ const genTicket = () => {
 }
 
 const generateTickets = (numberOfTicket) => {
-  fs.unlink('./public/tickets.zip', () => { })
   const tempTickes = []
   for (let i = 0; i < numberOfTicket; i++) {
     const ticket = genTicket()
@@ -47,6 +46,9 @@ const generateHTML = (tickets) => {
             width: 800px;
             height: 230px;
           }
+          .container-fluid {
+            margin-top: 10px;
+          }
         </style>
       </head>
       <body>
@@ -57,7 +59,7 @@ const generateHTML = (tickets) => {
                 <strong class="text-info">Ticket Number:</strong> ${ticket.ticket_number}
               </td>
             </tr>
-            ${ticket.ticket.map((row) => { return `<tr> ${row.map((e) => { return `<td>${e}</td>` })} </tr>` })}
+            ${ticket.ticket.map((row) => { return `<tr> ${row.map((e) => { return '<td>' + e + '</td>' })} </tr>` })}
           </table>
         </div>
       </body>
@@ -66,27 +68,37 @@ const generateHTML = (tickets) => {
   return html
 }
 
+const delFiles = () => {
+  fs.readdirSync(`${__dirname}/public/tickets`)
+    .forEach(file => {
+      console.log(file)
+      fs.unlink(`./public/tickets/${file}`, () => { })
+    })
+}
+
 const createZip = (payload) => {
+  delFiles()
   const tickets = generateHTML(payload)
   return new Promise((resolve, reject) => {
-    const result = tickets.map(async (e, i) => {
-      await nodeHtmlToImage({ output: `./public/tickets/Ticket-Number-${i + 1}.png`, html: e, quality: 100 })
-      return await imageToBase64(`./public/tickets/Ticket-Number-${i + 1}.png`)
+    const created = tickets.map(async (e, i) => {
+      return await nodeHtmlToImage({ html: e, quality: 100 })
     })
 
-    Promise.all(result)
-      .then((res) => {
+    Promise.all(created)
+      .then((images) => {
         const zip = new JSZip()
+        let date = new Date()
+        date = date.toISOString().split('T')[0]
 
-        if (res && res.length > 0) {
-          res.map((e, i) => {
-            zip.file(`Ticket-Number-${i + 1}.png`, e, { base64: true })
+        if (images && images.length > 0) {
+          images.map((e, i) => {
+            zip.file(`Ticket-Number-${i + 1}.png`, e, { binary: true })
           })
 
           zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
-            .pipe(fs.createWriteStream('./public/tickets.zip'))
+            .pipe(fs.createWriteStream(`${__dirname}/public/tickets/tickets-${date}.zip`))
             .on('finish', () => {
-              resolve('tickets.zip')
+              resolve(`tickets/tickets-${date}.zip`)
             })
         }
       })

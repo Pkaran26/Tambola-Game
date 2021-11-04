@@ -61,7 +61,11 @@ const TambolaTicket = () => {
                       } else {
                         setNumberOfTicket()
                       }
-                    }} value={numberOfTicket} required className='form-control'
+                    }}
+                    value={numberOfTicket}
+                    required
+                    className='form-control'
+                    disabled={disableBtn}
                   />
                 </div>
                 <div className='form-group'>
