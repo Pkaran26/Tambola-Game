@@ -24,6 +24,5 @@ app.post('/generate-zip', async (req, res) => {
   res.json({ filename: zip })
 })
 
-app.listen(3000, () => {
-  console.log('running')
-})
+const PORT = process.env.PORT || 3000
+app.listen(PORT, console.log(`Server started on port ${PORT}`))
