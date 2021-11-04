@@ -1,5 +1,5 @@
 const express = require('express')
-const { generateTickets, generateHTML, createZip } = require('./ticket_generator')
+const { generateTickets, createZip } = require('./ticket_generator')
 
 const app = express()
 app.use(express.static('public'))
@@ -20,8 +20,7 @@ app.get('/generate-ticket/:no', (req, res) => {
 
 app.post('/generate-zip', async (req, res) => {
   const tickets = req.body
-  const html = generateHTML(tickets)
-  const zip = await createZip(html)
+  const zip = await createZip(tickets)
   res.json({ filename: zip })
 })
 

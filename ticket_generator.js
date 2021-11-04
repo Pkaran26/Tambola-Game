@@ -49,28 +49,29 @@ const generateHTML = (tickets) => {
           }
         </style>
       </head>
-      <body class="container-fluid">
-        <table class="table table-bordered">
-          <tbody>
+      <body>
+        <div class="container-fluid">
+          <table class="table table-bordered">
             <tr>
-              <td colSpan="5">
+              <td colspan="5">
                 <strong class="text-info">Ticket Number:</strong> ${ticket.ticket_number}
               </td>
             </tr>
             ${ticket.ticket.map((row) => { return `<tr> ${row.map((e) => { return `<td>${e}</td>` })} </tr>` })}
-          </tbody>
-        </table>
+          </table>
+        </div>
       </body>
     </html>`
   })
   return html
 }
 
-const createZip = (tickets) => {
+const createZip = (payload) => {
+  const tickets = generateHTML(payload)
   return new Promise((resolve, reject) => {
     const result = tickets.map(async (e, i) => {
-      await nodeHtmlToImage({ output: `./public/tickets/Ticket Number ${i + 1}.png`, html: e })
-      return imageToBase64(`./public/tickets/Ticket Number ${i + 1}.png`)
+      await nodeHtmlToImage({ output: `./public/tickets/Ticket-Number-${i + 1}.png`, html: e, quality: 100 })
+      return await imageToBase64(`./public/tickets/Ticket-Number-${i + 1}.png`)
     })
 
     Promise.all(result)
@@ -79,7 +80,7 @@ const createZip = (tickets) => {
 
         if (res && res.length > 0) {
           res.map((e, i) => {
-            zip.file(`Ticket Number ${i + 1}.png`, e, { base64: true })
+            zip.file(`Ticket-Number-${i + 1}.png`, e, { base64: true })
           })
 
           zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
@@ -94,6 +95,5 @@ const createZip = (tickets) => {
 
 module.exports = {
   generateTickets,
-  generateHTML,
   createZip
 }
