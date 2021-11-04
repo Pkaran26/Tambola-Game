@@ -7,6 +7,8 @@ const Tambola = () => {
   const [currentNumber, setcurrentNumber] = useState('press next to start')
   const [usedNumber, useUsedNumber] = useState([])
   const [disableNext, setDisableNext] = useState(false)
+  const socket = io()
+  const [gameId, setGameId] = useState()
 
   useEffect(() => {
     const array = []
@@ -19,6 +21,7 @@ const Tambola = () => {
 
     setMainArray(array)
     setcurrentArray(current)
+    setGameId(Math.random().toString(36).substr(2, 5))
   }, [])
 
   const splitToChunks = (array, parts) => {
@@ -34,6 +37,7 @@ const Tambola = () => {
     if (mainArray && mainArray.length > 0) {
       const temp = splitToChunks(mainArray, 10)
       setDisplayArray(temp)
+      socket.emit('NEW_HOST_DATA', { gameId: gameId, data: temp })
     }
   }, [mainArray])
 
@@ -46,6 +50,7 @@ const Tambola = () => {
       if (!usedNumber.includes(index)) {
         setcurrentNumber(index + 1)
         useUsedNumber((usedNumber) => ([...usedNumber, index]))
+        socket.emit('NEW_HOST_NUMBER', { gameId: gameId, number: index + 1 })
         return index
       }
       i++
@@ -77,8 +82,9 @@ const Tambola = () => {
           <div className='card'>
             <div className='card-body'>
               <h4 className='text-center text-danger'>{currentNumber}</h4>
-              <hr />
               <button disabled={disableNext} onClick={getNextNumber} className='btn btn-primary btn-sm btn-block'>Next</button>
+              <hr />
+              <a target='_blank' href={`${window.location}viewer/${gameId}`}>Share this link with players</a>
             </div>
           </div>
         </div>
