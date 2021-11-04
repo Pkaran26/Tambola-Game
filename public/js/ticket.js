@@ -4,6 +4,7 @@ const TambolaTicket = () => {
   const [numberOfTicket, setNumberOfTicket] = useState('')
   const [tickets, setTickets] = useState([])
   const [msg, setMsg] = useState('')
+  const [disableBtn, setDisableBtn] = useState(false)
 
   const generateTickets = async (e) => {
     e.preventDefault()
@@ -17,6 +18,7 @@ const TambolaTicket = () => {
   }
 
   const printTickets = async () => {
+    setDisableBtn(true)
     setMsg('start zipping...')
     const result = await axios.post('/generate-zip', tickets)
       .catch((err) => { return err.response })
@@ -31,6 +33,10 @@ const TambolaTicket = () => {
       document.body.appendChild(element)
       element.click()
       document.body.removeChild(element)
+      setDisableBtn(false)
+      setMsg('')
+      setNumberOfTicket('')
+      setTickets([])
     }
   }
 
@@ -59,12 +65,12 @@ const TambolaTicket = () => {
                   />
                 </div>
                 <div className='form-group'>
-                  <input type='submit' className='btn btn-info btn-sm btn-block' value='Generate Ticket' />
+                  <input type='submit' disabled={disableBtn} className='btn btn-info btn-sm btn-block' value='Generate Ticket' />
                 </div>
               </form>
               <hr />
               {tickets && tickets.length > 0 ?
-                <button className='btn btn-primary' onClick={printTickets}>Download Tickets</button>
+                <button className='btn btn-primary' disabled={disableBtn} onClick={printTickets}>Download Tickets</button>
                 : null}
               <span>&nbsp;&nbsp;{msg}</span>
             </div>
