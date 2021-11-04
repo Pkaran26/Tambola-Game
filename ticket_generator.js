@@ -23,6 +23,7 @@ const genTicket = () => {
 }
 
 const generateTickets = (numberOfTicket) => {
+  fs.unlink('./public/tickets.zip')
   const tempTickes = []
   for (let i = 0; i < numberOfTicket; i++) {
     const ticket = genTicket()
@@ -36,7 +37,7 @@ const generateTickets = (numberOfTicket) => {
 }
 
 const generateHTML = (tickets) => {
-  const html = tickets.map((ticket, i) => {
+  const html = tickets.map((ticket) => {
     return `<html>
       <head>
         <link rel="stylesheet" href="http://localhost:3000/css/bootstrap.min.css" />
@@ -49,7 +50,7 @@ const generateHTML = (tickets) => {
         </style>
       </head>
       <body class="container-fluid">
-        <table class="table table-bordered" id=${`img_${i}`}>
+        <table class="table table-bordered">
           <tbody>
             <tr>
               <td colSpan="5">
