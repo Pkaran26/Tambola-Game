@@ -1,7 +1,9 @@
 const express = require('express')
+const { generateTickets, generateHTML, createZip } = require('./ticket_generator')
 
 const app = express()
 app.use(express.static('public'))
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/public/index.html`)
@@ -9,6 +11,18 @@ app.get('/', (req, res) => {
 
 app.get('/ticket-generator', (req, res) => {
   res.sendFile(`${__dirname}/public/ticket.html`)
+})
+
+app.get('/generate-ticket/:no', (req, res) => {
+  const tickets = generateTickets(parseInt(req.params.no))
+  res.json(tickets)
+})
+
+app.post('/generate-zip', async (req, res) => {
+  const tickets = req.body
+  const html = generateHTML(tickets)
+  const zip = await createZip(html)
+  res.json({ filename: zip })
 })
 
 app.listen(3000, () => {
