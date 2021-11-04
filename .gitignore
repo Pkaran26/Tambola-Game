@@ -1,4 +1,4 @@
 /node_modules
 yarn.lock
-/public/tickets
+/public/tickets/*
 /public/tickets.zip
