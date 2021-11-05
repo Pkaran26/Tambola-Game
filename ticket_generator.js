@@ -82,6 +82,7 @@ const createZip = (payload) => {
   return new Promise((resolve, reject) => {
     const created = tickets.map(async (e, i) => {
       return await nodeHtmlToImage({ html: e, quality: 100 })
+        .catch((err) => { return err })
     })
 
     Promise.all(created)
@@ -101,6 +102,10 @@ const createZip = (payload) => {
               resolve(`tickets/tickets-${date}.zip`)
             })
         }
+      })
+      .catch((err) => {
+        console.log(err)
+        reject(err)
       })
   })
 }
