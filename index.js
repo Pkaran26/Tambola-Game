@@ -57,6 +57,7 @@ app.get('/generate-ticket/:no', (req, res) => {
 app.post('/generate-zip', async (req, res) => {
   const tickets = req.body
   const zip = await createZip(tickets)
+    .catch((err) => { return err })
   res.json({ filename: zip })
 })
 
